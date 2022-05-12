@@ -1,6 +1,11 @@
 # Beyond Homophily: Structure-aware Path Aggregation Graph Neural Network
 ## PathNet
+
+PathNet is a structure-aware path aggregation graph neural network that can deal with both homophily and heterophily graphs. 
+
 ![PathNet](./Figs_in_paper/PathNet.png)
+
+This implementation of PathNet is based on [Pytorch Geometric](https://github.com/rusty1s/pytorch_geometric) API.
 
 ## File folders
 
@@ -17,6 +22,17 @@
 `preprocess`: contains the preprocessing code.
 
 `synthetic_data`: contains the code for generate the labels of synthetic experiments.
+
+## Setup
+
+This implementation is based on pytorch_geometric. To run the code, you need the following dependencies:
+
+- [Pytorch 1.3.0](https://pytorch.org/)
+- [sklearn](https://github.com/scikit-learn/scikit-learn)
+- [tqdm](https://github.com/tqdm/tqdm)
+- scipy
+- numpy
+- networkx
 
 ## Path Sampler (preprocessing)
 
@@ -79,4 +95,17 @@ Compile and run *gen_citeseer_syn.cpp*
 ```shell
 g++ gen_citeseer_syn.cpp -o gen_citeseer_syn -g -Wall -O2
 ./gen_citeseer_syn
+```
+
+### Citation
+
+Please consider citing the following paper when using our code for your application.
+
+```
+@inproceedings{yifei2022beyond,
+  title = "{Beyond Homophily: Structure-aware Path Aggregation Graph Neural Network.}", 
+  author = {Yifei Sun and Haoran Deng and Yang Yang and Chunping Wang and Jiarong Xu and Renhong Huang and Linfeng Cao and Yang Wang and Lei Chen, 
+  booktitle={Proceedings of the 31st International Joint Conference on Artificial Intelligence (IJCAI)},
+  year = 2022, 
+} 
 ```
