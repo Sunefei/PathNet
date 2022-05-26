@@ -3,7 +3,6 @@ import copy
 import random
 from itertools import combinations_with_replacement
 import matplotlib.pyplot as plt
-import networkx as nx
 import numpy as np
 import torch
 import torch.nn as nn
@@ -35,6 +34,7 @@ import tqdm
 import argparse
 import pickle
 import gzip
+
 warnings.filterwarnings('ignore')
 
 # json_path='./'  # public
@@ -46,7 +46,7 @@ def load_data_ranked(name):
     Load data for Cora, Cornell, Pubmed and Citeseer
     '''
     datasets = json.load(
-        open(json_path+"dataset.json"))
+        open(json_path + "dataset.json"))
     dataset_run = datasets[name]["dataset"]
     dataset_path = datasets[name]["dataset_path"][0]
     # dataset_path = "dataset" / Path(dataset_path)
@@ -84,9 +84,9 @@ def get_order(ratio: list, masked_index: torch.Tensor, total_node_num: int, seed
     # train_val_test_list=[int(i) for i in ratio.split('-')]
     train_val_test_list = ratio
     tvt_sum = sum(train_val_test_list)
-    tvt_ratio_list = [i/tvt_sum for i in train_val_test_list]
-    train_end_index = int(tvt_ratio_list[0]*masked_node_num)
-    val_end_index = train_end_index+int(tvt_ratio_list[1]*masked_node_num)
+    tvt_ratio_list = [i / tvt_sum for i in train_val_test_list]
+    train_end_index = int(tvt_ratio_list[0] * masked_node_num)
+    val_end_index = train_end_index + int(tvt_ratio_list[1] * masked_node_num)
 
     train_mask_index = shuffle_criterion[:train_end_index]
     val_mask_index = shuffle_criterion[train_end_index:val_end_index]
@@ -119,17 +119,17 @@ def get_whole_mask(y, ratio: list = [48, 32, 20], seed: int = 1234567):
         #     seed+=1
 
 
-def load_data(dataset_name, round):
+def load_data(dataset_name, round, data_root="./other_data"):
     '''
     Load data for Nba, Electronics, Bgp
     '''
-    numpy_x = np.load("./other_data"+'/'+dataset_name+'/x.npy')
+    numpy_x = np.load(data_root + '/' + dataset_name + '/x.npy')
     x = torch.from_numpy(numpy_x).to(torch.float)
-    numpy_y = np.load("./other_data"+'/'+dataset_name+'/y.npy')
+    numpy_y = np.load(data_root + '/' + dataset_name + '/y.npy')
     y = torch.from_numpy(numpy_y).to(torch.long)
-    # numpy_edge_index = np.load("./other_data"+'/'+dataset_name+'/edge_index.npy')
+    # numpy_edge_index = np.load(data_root+'/'+dataset_name+'/edge_index.npy')
     # edge_index = torch.from_numpy(numpy_edge_index).to(torch.long)
-    (train_mask, val_mask, test_mask) = get_whole_mask(y, seed=round+1)
+    (train_mask, val_mask, test_mask) = get_whole_mask(y, seed=round + 1)
 
     lbl_set = []
     for lbl in y:

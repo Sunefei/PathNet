@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
 
     stringstream ss1, ss2;
     ss1.str("");
-    ss1 << "./edge_input/";
+    ss1 << "../edge_input/";
     ss1 << argv[1];
     ss1 << ".in";
 

@@ -1,0 +1,29 @@
+cuda: cuda:0
+learning_rate: 0.005
+dropout: 0.7
+epoch: 1000
+weight_decay: 0.0005
+round: 10
+hidden_size: 64
+num_of_walks: 40
+walk_length: 4
+marker: merw
+data_name: [['cornell']]
+paths_root: /data/syf/rw/
+model_mode: pathnet
+pathnet Avg for cornell: acc0.9135 ± 0.0291	 prec0.7572 ± 0.0147	 rec0.6800 ± 0.0523	 maf10.7029 ± 0.0397	 mif10.9135 ± 0.0291	 
+cuda: cuda:0
+learning_rate: 0.005
+dropout: 0.7
+epoch: 1000
+weight_decay: 0.0005
+round: 10
+hidden_size: 128
+num_of_walks: 40
+walk_length: 4
+marker: merw
+data_name: [['cornell']]
+paths_root: /data/syf/rw/
+new_data_root: /data/syf
+model_mode: pathnet
+pathnet Avg for cornell: acc0.9243 ± 0.0162	 prec0.7650 ± 0.0149	 rec0.7005 ± 0.0230	 maf10.7226 ± 0.0120	 mif10.9216 ± 0.0146

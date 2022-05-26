@@ -1,0 +1,15 @@
+cuda: cuda:0
+learning_rate: 0.005
+dropout: 0.7
+epoch: 1000
+weight_decay: 0.0005
+round: 10
+hidden_size: 32
+num_of_walks: 40
+walk_length: 4
+marker: merw
+data_name: [['Electronics']]
+paths_root: /data/syf/rw/
+new_data_root: /data/syf
+model_mode: pathnet
+pathnet Avg for Electronics: acc0.7783 ± 0.0042	 prec0.7351 ± 0.0060	 rec0.7050 ± 0.0050	 maf10.7094 ± 0.0045	 mif10.7496 ± 0.0044

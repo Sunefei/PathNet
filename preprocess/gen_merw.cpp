@@ -133,9 +133,9 @@ int main(int argc, char *argv[])
 
     stringstream ss1, ss2;
     ss1.str("");
-    ss1 << "./edge_input/";
+    ss1 << "../edge_input/";
     ss1 << argv[1];
-    ss1 << "_nsl";
+//    ss1 << "_nsl";
     ss1 << ".in";
 
     ss2.str("");
@@ -146,7 +146,8 @@ int main(int argc, char *argv[])
     ss2 << argv[2];
     ss2 << "_";
     ss2 << argv[3];
-    ss2 << "_nsl";
+//    ss2 << "_";
+//    ss2 << "nsl";
     ss2 << "_merw.txt";
 
     num_of_walks = atoi(argv[2]);

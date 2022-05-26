@@ -1,0 +1,30 @@
+cuda: cuda:1
+learning_rate: 0.005
+dropout: 0.7
+epoch: 1000
+weight_decay: 0.0005
+round: 10
+hidden_size: 256
+num_of_walks: 40
+walk_length: 4
+marker: merw
+data_name: [['Nba']]
+paths_root: /data/syf/rw/
+new_data_root: /data/syf
+model_mode: pathnet
+pathnet Avg for Nba: acc0.7148 ± 0.0532	 prec0.6440 ± 0.1127	 rec0.6314 ± 0.1093	 maf10.6281 ± 0.1081	 mif10.7048 ± 0.0532
+cuda: cuda:1
+learning_rate: 0.001
+dropout: 0.7
+epoch: 1000
+weight_decay: 0.0005
+round: 10
+hidden_size: 1024
+num_of_walks: 40
+walk_length: 4
+marker: merw
+data_name: [['Nba']]
+paths_root: /data/syf/rw/
+new_data_root: /data/syf
+model_mode: pathnet
+pathnet Avg for Nba: acc0.7279 ± 0.0493	 prec0.6991 ± 0.0992	 rec0.6861 ± 0.0961	 maf10.6793 ± 0.0944	 mif10.7063 ± 0.0582
