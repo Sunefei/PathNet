@@ -137,7 +137,7 @@ class AbsolutePositionEmbedding(nn.Module):
 
 class PathNet(MessagePassing):
     '''
-    Simple implementation of PathNet
+    Simple implementation of PathNet 
     '''
 
     def __init__(self, feature_length, hidden_size, out_size, wl, **kwargs):
@@ -156,22 +156,6 @@ class PathNet(MessagePassing):
 
         self.attw = torch.nn.Linear(2 * hidden_size, 1)
         self.Lrelu = torch.nn.LeakyReLU()
-        # for netN in range(wl):
-
-        #     self.nei0 = torch.nn.Linear(
-        #         hidden_size, hidden_size)  # for root node
-        #     self.nei1 = torch.nn.Linear(hidden_size, hidden_size)
-        #     self.nei2 = torch.nn.Linear(hidden_size, hidden_size)
-        #     # for 3-rd order neighbor
-        #     self.nei3 = torch.nn.Linear(hidden_size, hidden_size)
-        #     self.nei4 = torch.nn.Linear(hidden_size, hidden_size)
-
-        # torch.nn.init.xavier_uniform_(self.fc0.weight)
-        # torch.nn.init.xavier_uniform_(self.fc2.weight)
-        # torch.nn.init.xavier_uniform_(self.nei0.weight)
-        # torch.nn.init.xavier_uniform_(self.nei1.weight)
-        # torch.nn.init.xavier_uniform_(self.nei2.weight)
-        # torch.nn.init.xavier_uniform_(self.nei3.weight)
 
     def forward(self, X, neis, num_w, walk_len, indices, layer_type, indxx):
         split = sum(indices)
@@ -190,10 +174,6 @@ class PathNet(MessagePassing):
         for layer in self.nets:
             nei_l = layer(nei)
             nei_list.append(nei_l)
-            # nei1 = self.nei1(nei)
-            # nei2 = self.nei2(nei)
-            # nei3 = self.nei3(nei)
-            # nei4 = self.nei4(nei)
         nei = torch.stack(nei_list, dim=1)
 
         nei = nei[indxx, layer_type].view(
@@ -203,18 +183,11 @@ class PathNet(MessagePassing):
         nei, (h_n, c_n) = self.LSTM(nei)
         h_n = h_n.transpose(0, 1).view(
             num_w, split, -1)  # [V, num_of_walks, H]
-        # print(h_n.shape)
-        # h_n = torch.mean(h_n, dim=2)
-        # print(h_n.shape)
-        # h_n = self.pos(h_n)
-        # print(h_n.shape)
+
         cat_res = torch.cat((h_n, neis[0].view(num_w, split, -1)), dim=-1)
         att_score = F.softmax(self.Lrelu(
             self.attw(cat_res)))  # num_w, split, 1
         h_n = att_score * h_n
-        # kmlp = self.Lrelu(self.kmlp(h_n))
-        # vmlp = self.Lrelu(self.vmlp(h_n))
-        # h_n, nei = self.att(qmlp, kmlp, vmlp)
 
         h_n = torch.mean(h_n, dim=0)
         # print(h_n.shape)
@@ -349,6 +322,7 @@ def train_fixed_indices(X, Y, num_classes, mode, data_name, train_indices, val_i
 
 
 print(names)
+print(args)
 for name in names:
     save_file_name = "result_for_" + name
     file = open("./results/" + save_file_name + ".txt", "a")
