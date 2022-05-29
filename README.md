@@ -82,7 +82,7 @@ Note:
 3. The mean accuracy and standard deviation is calculated by the 10 splits of dataset.
 
 ```shell
-python PathNet_run.py -data=cornell 
+python PathNet_run.py -data=cornell -hid=128
 ```
 Other hyperparameters can be delivered by command line arguments, such as ```-lr=0.005``` and `-data=citeseer`. Other command line arguments can be found in `PathNet_run.py`. The trained model will be saved in 'saved_models' and the performance will be saved in 'results'.
 

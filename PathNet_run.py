@@ -208,10 +208,10 @@ def train_fixed_indices(X, Y, num_classes, mode, data_name, train_indices, val_i
         predictor = PathNet(feature_length, hid_size,
                             num_classes, walk_len).to(device)
 
-    optimizer = torch.optim.AdamW(
-        predictor.parameters(), lr=lr, weight_decay=weight_decay)
-    # optimizer = torch.optim.Adam(
+    # optimizer = torch.optim.AdamW(
     #     predictor.parameters(), lr=lr, weight_decay=weight_decay)
+    optimizer = torch.optim.Adam(
+        predictor.parameters(), lr=lr, weight_decay=weight_decay)
     lossfunc = torch.nn.CrossEntropyLoss()
 
     # prep data
