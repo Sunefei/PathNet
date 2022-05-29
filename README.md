@@ -92,8 +92,12 @@ For example: use `python PathNet_run.py -data=cornell ` gets the result in `resu
 
 ![performance_eg](./performance_eg.jpg)
 
+### Total performance
+
+![performance](./performance.jpg)
 
 ### Model variants & parameters
+
 Changing the PAGG class can deliver other variants. If you want to try other settings like path length or number of paths, you can first generate the according paths and change the hyperparameters.
 
 ## Synthetic experiments
