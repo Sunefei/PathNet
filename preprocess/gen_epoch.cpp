@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 
     stringstream ss1, ss2;
     ss1.str("");
-    ss1 << "./edge_input/";
+    ss1 << "../edge_input/";
     ss1 << argv[1];
     ss1 << ".in";
 
@@ -82,8 +82,8 @@ int main(int argc, char *argv[])
     for (int epoch = 0; epoch < 1000; epoch++)
     {
         ss2.str("");
-        // ss2 << "./preprocess/";
-        ss2 << "/data/syf/rw/";
+        ss2 << "./";
+        // ss2 << "/data/syf/rw/";
         ss2 << argv[1];
         ss2 << "_";
         ss2 << argv[2];

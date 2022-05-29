@@ -46,6 +46,10 @@ g++ gen_merw.cpp -o gen_merw -g -Wall -O2 -mcmodel=medium
 ./gen_merw [data_name] [path_num] [path_length]
 ```
 
+### Revision guidance
+
+The `ss1` and `ss2` in the `main` function are the input and output filenames. Feel free to revise  the path of files to adapt to your running environment.
+
 Generated paths example:  `./gen_merw cornell 40 4`
 
 ![path_eg](path_eg.jpg)

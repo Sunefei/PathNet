@@ -139,8 +139,8 @@ int main(int argc, char *argv[])
     ss1 << ".in";
 
     ss2.str("");
-    // ss2 << "./preprocess/";
-    ss2 << "/data/syf/rw/";
+    ss2 << "./";
+    // ss2 << "/data/syf/rw/";
     ss2 << argv[1];
     ss2 << "_";
     ss2 << argv[2];
