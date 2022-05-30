@@ -55,6 +55,7 @@ parser.add_argument('-wl', '--walk_length', type=int, default=4)
 parser.add_argument('-mk', '--marker', type=str, default='merw')
 parser.add_argument('-data', '--data_name', action='append',
                     nargs='*', type=str)  # , default=['cornell', ]
+parser.add_argument('-nd', '--is_new_data', type=bool, default=False)
 parser.add_argument('-pr', '--paths_root', type=str, default="./preprocess/")
 parser.add_argument('-ndr', '--new_data_root',
                     type=str, default="./other_data")
@@ -73,14 +74,18 @@ rounds = args.round
 num_of_walks = args.num_of_walks
 walk_length = args.walk_length
 hidden_size = args.hidden_size
-names = args.data_name[0]
+name = args.data_name[0]
 # start, end = 0, 1
 mode = args.model_mode
 
 paths_root = args.paths_root  # public
 new_data_root = args.new_data_root
 device = args.cuda
-
+is_new_data = args.is_new_data
+if is_new_data:
+    new_data = name
+else:
+    new_data = "None"
 
 # os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 # Seed
@@ -294,7 +299,7 @@ def train_fixed_indices(X, Y, num_classes, mode, data_name, train_indices, val_i
     val_acc = 0  # validation
     train_bar = tqdm.tqdm(range(epochs), dynamic_ncols=True, unit='step')
 
-    if data_name in ['cora', 'citeseer', 'cornell', "Nba"]:  # nomarl datasets
+    if data_name in ['cora', 'citeseer', 'cornell', "Nba", new_data]:  # nomarl datasets
         neis_all = torch.tensor(walks, dtype=torch.long).view(
             1000, node_num, -1)
         path_type_all = torch.tensor(path_type_all, dtype=torch.long).view(
@@ -321,7 +326,7 @@ def train_fixed_indices(X, Y, num_classes, mode, data_name, train_indices, val_i
             path_type = torch.tensor(path_type, dtype=torch.long).view(
                 node_num, num_w, walk_len)
 
-        elif data_name in ['cora', 'citeseer', 'cornell', "Nba"]:
+        elif data_name in ['cora', 'citeseer', 'cornell', "Nba", new_data]:
             neis = neis_all[epoch]
             path_type = path_type_all[epoch]
 
@@ -391,84 +396,84 @@ def train_fixed_indices(X, Y, num_classes, mode, data_name, train_indices, val_i
     return test_1f1, test_2f1, test_rec, test_prec, test_acc  # val_acc is a list
 
 
-print(names)
+print(name)
 print(args)
-for name in names:
-    save_file_name = "result_for_" + name
-    file = open("./results/" + save_file_name + ".txt", "a")
-    print(name)
-    walks = []
-    path_type = []
-    if name in ['cora', 'citeseer', 'cornell', "Nba"]:
-        path_file = paths_root + "{}_{}_{}_{}.txt".format(
-            name, num_of_walks, walk_length, marker)
+# for name in names:
+save_file_name = "result_for_" + name
+file = open("./results/" + save_file_name + ".txt", "a")
+print(name)
+walks = []
+path_type = []
+if name in ['cora', 'citeseer', 'cornell', "Nba"]:
+    path_file = paths_root + "{}_{}_{}_{}.txt".format(
+        name, num_of_walks, walk_length, marker)
 
-        try:
-            with open(path_file, "r") as p:
-                for line in tqdm.tqdm(p):
-                    info = list(map(int, line[1:-2].split(",")))
-                    walks.append(info[:walk_length])
-                    path_type.append(info[walk_length:])
-        except FileNotFoundError as fnf_error:
-            print(
-                fnf_error, 'the file change the paths_root to where you put the sampled paths')
-        print("Opening file of paths: " + path_file)
-        print(len(walks), len(path_type))
+    try:
+        with open(path_file, "r") as p:
+            for line in tqdm.tqdm(p):
+                info = list(map(int, line[1:-2].split(",")))
+                walks.append(info[:walk_length])
+                path_type.append(info[walk_length:])
+    except FileNotFoundError as fnf_error:
+        print(
+            fnf_error, 'the file change the paths_root to where you put the sampled paths')
+    print("Opening file of paths: " + path_file)
+    print(len(walks), len(path_type))
 
-    avg_test_1f1, avg_test_2f1, avg_test_rec, avg_test_prec, avg_test_acc, \
-        std_test_1f1, std_test_2f1, std_test_rec, std_test_prec, std_test_acc = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    test_1f1s, test_2f1s, test_recs, test_precs, test_accs = [], [], [], [], []
+avg_test_1f1, avg_test_2f1, avg_test_rec, avg_test_prec, avg_test_acc, \
+    std_test_1f1, std_test_2f1, std_test_rec, std_test_prec, std_test_acc = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+test_1f1s, test_2f1s, test_recs, test_precs, test_accs = [], [], [], [], []
 
-    if name not in ['bgp', 'Nba', 'Electronics']:
-        (X, Y, num_classes, datasets) = load_data_ranked(name)
+if name not in ['bgp', 'Nba', 'Electronics', new_data]:
+    (X, Y, num_classes, datasets) = load_data_ranked(name)
 
-    for i in range(rounds):
-        print('round', i)
-        if name in ['bgp', 'Nba', 'Electronics']:
-            (X, Y, num_classes, train_mask, val_mask,
-             test_mask) = load_data(name, i, new_data_root)
-        else:
-            dataset_run = datasets[name]["dataset"]
-            dataset_path = datasets[name]["dataset_path"][i]
-            dataset_path = "datasets" / \
-                           Path(dataset_path)
-            val_size = datasets[name]["val_size"]
+for i in range(rounds):
+    print('round', i)
+    if name in ['bgp', 'Nba', 'Electronics', new_data]:
+        (X, Y, num_classes, train_mask, val_mask,
+            test_mask) = load_data(name, i, new_data_root)
+    else:
+        dataset_run = datasets[name]["dataset"]
+        dataset_path = datasets[name]["dataset_path"][i]
+        dataset_path = "datasets" / \
+            Path(dataset_path)
+        val_size = datasets[name]["val_size"]
 
-            dataset = PlanetoidData(
-                dataset_str=dataset_run, dataset_path=dataset_path, val_size=val_size
-            )
+        dataset = PlanetoidData(
+            dataset_str=dataset_run, dataset_path=dataset_path, val_size=val_size
+        )
 
-            train_mask = dataset._dense_data["train_mask"]
-            val_mask = dataset._dense_data["val_mask"]
-            test_mask = dataset._dense_data["test_mask"]
-        test_1f1, test_2f1, test_rec, test_prec, test_acc = train_fixed_indices(
-            X, Y, num_classes, mode, name, train_mask, val_mask, test_mask, num_of_walks, hidden_size, walk_length,
-            walks, path_type, i)
-        test_recs.append(test_rec)
-        test_accs.append(test_acc)
-        test_1f1s.append(test_1f1)
-        test_2f1s.append(test_2f1)
-        test_precs.append(test_prec)
+        train_mask = dataset._dense_data["train_mask"]
+        val_mask = dataset._dense_data["val_mask"]
+        test_mask = dataset._dense_data["test_mask"]
+    test_1f1, test_2f1, test_rec, test_prec, test_acc = train_fixed_indices(
+        X, Y, num_classes, mode, name, train_mask, val_mask, test_mask, num_of_walks, hidden_size, walk_length,
+        walks, path_type, i)
+    test_recs.append(test_rec)
+    test_accs.append(test_acc)
+    test_1f1s.append(test_1f1)
+    test_2f1s.append(test_2f1)
+    test_precs.append(test_prec)
 
-    avg_test_rec = sum(test_recs) / rounds
-    avg_test_acc = sum(test_accs) / rounds
-    avg_test_1f1 = sum(test_1f1s) / rounds
-    avg_test_2f1 = sum(test_2f1s) / rounds
-    avg_test_prec = sum(test_precs) / rounds
+avg_test_rec = sum(test_recs) / rounds
+avg_test_acc = sum(test_accs) / rounds
+avg_test_1f1 = sum(test_1f1s) / rounds
+avg_test_2f1 = sum(test_2f1s) / rounds
+avg_test_prec = sum(test_precs) / rounds
 
-    std_test_rec = np.std(np.array(test_recs))
-    std_test_acc = np.std(np.array(test_accs))
-    std_test_1f1 = np.std(np.array(test_1f1s))
-    std_test_2f1 = np.std(np.array(test_2f1s))
-    std_test_prec = np.std(np.array(test_precs))
+std_test_rec = np.std(np.array(test_recs))
+std_test_acc = np.std(np.array(test_accs))
+std_test_1f1 = np.std(np.array(test_1f1s))
+std_test_2f1 = np.std(np.array(test_2f1s))
+std_test_prec = np.std(np.array(test_precs))
 
-    for k in args.__dict__:
-        print(k + ": " + str(args.__dict__[k]), file=file)
-    print(
-        mode + " Avg for {}: acc{:.4f} ± {:.4f}\t prec{:.4f} ± {:.4f}\t rec{:.4f} ± {:.4f}\t maf1{:.4f} ± {:.4f}\t mif1{:.4f} ± {:.4f}\t ".format(
-            name, avg_test_acc, std_test_acc, avg_test_prec, std_test_prec, avg_test_rec, std_test_rec, avg_test_1f1,
-            std_test_1f1, avg_test_2f1, std_test_2f1))
-    print(
-        mode + " Avg for {}: acc{:.4f} ± {:.4f}\t prec{:.4f} ± {:.4f}\t rec{:.4f} ± {:.4f}\t maf1{:.4f} ± {:.4f}\t mif1{:.4f} ± {:.4f}\t ".format(
-            name, avg_test_acc, std_test_acc, avg_test_prec, std_test_prec, avg_test_rec, std_test_rec, avg_test_1f1,
-            std_test_1f1, avg_test_2f1, std_test_2f1), file=file)
+for k in args.__dict__:
+    print(k + ": " + str(args.__dict__[k]), file=file)
+print(
+    mode + " Avg for {}: acc{:.4f} ± {:.4f}\t prec{:.4f} ± {:.4f}\t rec{:.4f} ± {:.4f}\t maf1{:.4f} ± {:.4f}\t mif1{:.4f} ± {:.4f}\t ".format(
+        name, avg_test_acc, std_test_acc, avg_test_prec, std_test_prec, avg_test_rec, std_test_rec, avg_test_1f1,
+        std_test_1f1, avg_test_2f1, std_test_2f1))
+print(
+    mode + " Avg for {}: acc{:.4f} ± {:.4f}\t prec{:.4f} ± {:.4f}\t rec{:.4f} ± {:.4f}\t maf1{:.4f} ± {:.4f}\t mif1{:.4f} ± {:.4f}\t ".format(
+        name, avg_test_acc, std_test_acc, avg_test_prec, std_test_prec, avg_test_rec, std_test_rec, avg_test_1f1,
+        std_test_1f1, avg_test_2f1, std_test_2f1), file=file)
