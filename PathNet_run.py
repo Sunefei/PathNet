@@ -199,12 +199,82 @@ class PathNet(MessagePassing):
         return dout
 
 
+class PathNet_homo(MessagePassing):
+    '''
+    To do: merge into PathNet
+    '''
+
+    def __init__(self, feature_length, hidden_size, out_size, wl, **kwargs):
+        kwargs.setdefault('aggr', 'mean')
+        super(PathNet_homo, self).__init__()
+        self.feature_length, self.hidden_size, self.out_size \
+            = feature_length, hidden_size, out_size
+
+        self.fc0 = torch.nn.Linear(feature_length, hidden_size)
+        # self.RNN = nn.RNN(hidden_size, hidden_size)
+
+        self.LSTM = nn.LSTM(hidden_size, hidden_size)
+        self.fc2 = torch.nn.Linear(2*hidden_size, out_size)
+        self.nets = torch.nn.ModuleList(
+            [torch.nn.Linear(hidden_size, hidden_size) for i in range(wl)])
+
+        self.attw = torch.nn.Linear(2*hidden_size, 1)
+        self.Lrelu = torch.nn.LeakyReLU()
+
+        torch.nn.init.xavier_uniform_(self.fc0.weight)
+        torch.nn.init.xavier_uniform_(self.fc2.weight)
+
+    def forward(self, X, neis, num_w, walk_len, indices, layer_type, indxx):
+        split = sum(indices)
+        # X = X.to(device)
+        X = self.fc0(X)
+        X = F.relu(X)
+        neis = neis.to(device)
+
+        nei = X[neis].view(split*num_w*walk_len, self.hidden_size)
+
+        layer_type = layer_type.view(split*num_w*walk_len).to(device)
+        nei_list = []
+        for layer in self.nets:
+            nei_l = layer(nei)
+            nei_list.append(nei_l)
+        nei = torch.stack(nei_list, dim=1)
+
+        nei = nei[indxx, layer_type].view(
+            split*num_w, walk_len, self.hidden_size)
+        nei = F.relu(nei)
+
+        ego_full = nei.reshape(split, num_w, walk_len,
+                               self.hidden_size)[:, :, 0, :]
+
+        nei = nei.transpose(0, 1)
+        # print(nei.shape)  # torch.Size([4, 3480, 128])
+        nei = F.dropout(nei, p=dropout, training=self.training)
+        nei, (h_n, c_n) = self.LSTM(nei)
+        h_n = h_n.transpose(0, 1).view(
+            split, num_w, -1)  # [V, num_of_walks, H]
+
+        cat_res = torch.cat((h_n, ego_full), dim=-1)
+        att_score = self.attw(cat_res)
+        h_n = (1+att_score) * h_n
+
+        h_n = torch.mean(h_n, dim=1)
+        ego = X[indices]
+        layer1 = torch.cat((ego, h_n), dim=1)  # [V, 2*H]
+        layer1 = F.dropout(layer1, p=dropout, training=self.training)
+        dout = self.fc2(layer1)
+        return dout
+
+
 def train_fixed_indices(X, Y, num_classes, mode, data_name, train_indices, val_indices, test_indices, num_w, hid_size,
                         walk_len, walks, path_type_all, round_i):
     feature_length = X.shape[-1]
     node_num = Y.shape[0]
     # Construct the model
-    if mode == 'pathnet':
+    if data_name in ['cora', 'citeseer', 'pubmed']:
+        predictor = PathNet_homo(feature_length, hid_size,
+                                 num_classes, walk_len).to(device)
+    else:
         predictor = PathNet(feature_length, hid_size,
                             num_classes, walk_len).to(device)
 
