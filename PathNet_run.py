@@ -74,7 +74,7 @@ rounds = args.round
 num_of_walks = args.num_of_walks
 walk_length = args.walk_length
 hidden_size = args.hidden_size
-name = args.data_name[0]
+name = args.data_name[0][0]
 # start, end = 0, 1
 mode = args.model_mode
 
@@ -98,6 +98,9 @@ else:
 
 
 class PositionalEncoding(nn.Module):
+    '''
+    Currently not using.
+    '''
 
     def __init__(self, d_model, max_len=5000):
         super(PositionalEncoding, self).__init__()
@@ -116,6 +119,10 @@ class PositionalEncoding(nn.Module):
 
 
 class AbsolutePositionEmbedding(nn.Module):
+    '''
+    Currently not using.
+    '''
+
     def __init__(
             self,
             seq_len,
@@ -299,7 +306,7 @@ def train_fixed_indices(X, Y, num_classes, mode, data_name, train_indices, val_i
     val_acc = 0  # validation
     train_bar = tqdm.tqdm(range(epochs), dynamic_ncols=True, unit='step')
 
-    if data_name in ['cora', 'citeseer', 'cornell', "Nba", new_data]:  # nomarl datasets
+    if data_name in ['cora', 'citeseer', 'cornell', "Nba", new_data]:  # normal datasets
         neis_all = torch.tensor(walks, dtype=torch.long).view(
             1000, node_num, -1)
         path_type_all = torch.tensor(path_type_all, dtype=torch.long).view(
