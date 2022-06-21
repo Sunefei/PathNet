@@ -37,6 +37,7 @@ This implementation is based on pytorch_geometric. To run the code, you need the
 - scipy
 - numpy
 - networkx
+- pathlib
 
 ### Path Sampler (preprocessing)
 
