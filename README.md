@@ -42,9 +42,13 @@ This implementation is based on pytorch_geometric. To run the code, you need the
 ### Path Sampler (preprocessing)
 
 This part can be done before training.
-To generate the paths for dataset *data_name* (*eg.* Cora). In `gen.cpp`, we change the parameter of [data_name], then compile and run `gen.cpp`. The program will generate a file containing all paths.
+To generate the paths for dataset *data_name* (*eg.* Cora): 
 
-Compile and run `gen.cpp`  for normal datasets.
+The first step is to use `init_rw.py` (which calls for `compute_merw.py`) to generate the `****.in` as edge input which includes edge pairs and the transfer probability of each edge. (see examples like `edge_input/cornell.in`)
+
+Secondly, in `gen_merw.cpp`, we change the parameter of [data_name], then compile and run `gen_merw.cpp`. The program will generate a file containing all paths.
+
+Compile and run `gen_merw.cpp`  for normal datasets.
 
 ```shell
 g++ gen_merw.cpp -o gen_merw -g -Wall -O2 -mcmodel=medium
