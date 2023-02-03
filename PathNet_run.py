@@ -442,8 +442,7 @@ for i in range(rounds):
     else:
         dataset_run = datasets[name]["dataset"]
         dataset_path = datasets[name]["dataset_path"][i]
-        dataset_path = "datasets" / \
-            Path(dataset_path)
+        dataset_path = Path(dataset_path)
         val_size = datasets[name]["val_size"]
 
         dataset = PlanetoidData(

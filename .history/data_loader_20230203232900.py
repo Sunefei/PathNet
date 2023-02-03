@@ -45,8 +45,10 @@ def load_data_ranked(name):
     '''
     Load data for Cora, Cornell, Pubmed and Citeseer
     '''
+    # datasets = json.load(
+    #     open(json_path + "dataset.json"))
     datasets = json.load(
-        open(json_path + "dataset.json"))
+        open(json_path + "dataset copy.json"))
     dataset_run = datasets[name]["dataset"]
     dataset_path = datasets[name]["dataset_path"][0]
     # dataset_path = "dataset" / Path(dataset_path)
