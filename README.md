@@ -149,10 +149,19 @@ E-mail: yifeisun@zju.edu.cn
 Please consider citing the following paper when using our code for your application.
 
 ```
-@inproceedings{yifei2022beyond,
-  title = "{Beyond Homophily: Structure-aware Path Aggregation Graph Neural Network.}", 
-  author = {Yifei Sun and Haoran Deng and Yang Yang and Chunping Wang and Jiarong Xu and Renhong Huang and Linfeng Cao and Yang Wang and Lei Chen, 
-  booktitle={Proceedings of the 31st International Joint Conference on Artificial Intelligence (IJCAI)},
-  year = 2022, 
-} 
+@inproceedings{ijcai2022p310,
+  title     = {Beyond Homophily: Structure-aware Path Aggregation Graph Neural Network},
+  author    = {Sun, Yifei and Deng, Haoran and Yang, Yang and Wang, Chunping and Xu, Jiarong and Huang, Renhong and Cao, Linfeng and Wang, Yang and Chen, Lei},
+  booktitle = {Proceedings of the Thirty-First International Joint Conference on
+               Artificial Intelligence, {IJCAI-22}},
+  publisher = {International Joint Conferences on Artificial Intelligence Organization},
+  editor    = {Lud De Raedt},
+  pages     = {2233--2240},
+  year      = {2022},
+  month     = {7},
+  note      = {Main Track},
+  doi       = {10.24963/ijcai.2022/310},
+  url       = {https://doi.org/10.24963/ijcai.2022/310},
+}
+
 ```
